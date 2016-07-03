@@ -3,6 +3,7 @@ import copy
 import threading
 import traceback
 import time
+import sqlite3
 
 br=mechanize.Browser()
 br2=mechanize.Browser()
@@ -14,7 +15,8 @@ br.open(root)
 links=br.links()
 links=[root[:-1]+i.url for i in links if i.url[0]=="/"]
 print br.open("http://www.python.org/")
-crawler=[{"link":root,"content":response.read(),"links":browsers[-1].links(),"flag":False}]
+#crawler=[{"link":root,"content":response.read(),"links":browsers[-1].links(),"flag":False}]
+crawler=[{"link":root,"content":response.read(),"links":browsers[-1].links()}]
 crawler2=[]
 browser={}
 
@@ -26,29 +28,38 @@ counter=0
 def adder(crawler,link):
     try:
         with lock:
+            crawler["link"].append(link)
             browser[link]=mechanize.Browser()
             response=browser[link].open(link)
             print "######################start"
-            crawler["link"].append(link)
             crawler["content"].append(response.read())
             print browser[link]
             #print browser[link].links()
             links=[root[:-1]+i.url for i in browser[link].links() if i.url[0]=="/"]
             crawler["links"].append(links)
             #crawler["links"].append(browser[link].links())
-            crawler["flag"].append(False)
+            #crawler["flag"].append(False)
             print "#######################end"
-            t=open("test.txt","a")
+            db=sqlite3.connect("crawler")
+            db.text_factory=str
+            try:
+                db.execute("insert into scrapper (link, content) values (?, ?);",(str(crawler["link"][-1]), crawler["content"][-1] ))
+            except:
+                del crawler["links"][-1]
+                #del crawler["flag"][-1]
+                print "we have no bugs hahahahaha                                   yooohahahaha"
+            db.commit()
+            db.close()
+            '''t=open("test.txt","a")
             t.write(str(crawler["link"])+"\n")
             t.write(crawler["content"][-1])
-            t.close()
+            t.close()'''
             del crawler["content"][-1]
             rooter=open("root.txt","w")
             st_maker=str(crawler)
             rooter.write(st_maker)
             rooter.close()
         print "added successfully this: "+str(crawler["link"][-1])
-
     except:
         print link
         traceback.print_exc()
@@ -76,24 +87,24 @@ def crawl(links):
 
 while True:
     print crawler
-    if (counter>=min(len(crawler["link"]),len(crawler["links"]),len(crawler["flag"])) and threading.activeCount()==1):
+    if (counter>=min(len(crawler["link"]),len(crawler["links"])) and threading.activeCount()==1):
         #t=open("test.txt","w")
         #t.write(str(crawler))
         #t.close()
         print "end of crawling"
         break
-    elif (counter>=min(len(crawler["link"]),len(crawler["links"]),len(crawler["flag"])) and threading.activeCount()>1):
+    elif (counter>=min(len(crawler["link"]),len(crawler["links"])) and threading.activeCount()>1):
         time.sleep(1)
         print len(crawler["content"])
         print "waiting..."+str(threading.activeCount())
         continue
     else:
-        if crawler["flag"][counter]==False:
-            links=crawler["links"][counter]
-            #thread=threading.Thread(target=crawl,args=(links,))
-            #thread.start()
-            crawl(links)
-            #crawler["flag"][counter]=True
+        #if crawler["flag"][counter]==False:
+        links=crawler["links"][counter]
+        #thread=threading.Thread(target=crawl,args=(links,))
+        #thread.start()
+        crawl(links)
+        #crawler["flag"][counter]=True
     counter+=1
     print counter
 
