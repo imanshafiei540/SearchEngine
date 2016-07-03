@@ -1,4 +1,3 @@
-import urllib2
 import re
 import sqlite3
 import time
@@ -8,11 +7,18 @@ b = raw_input("Words that you don't need : ")
 c = raw_input("Containing at least one word: ")
 '''
 must_contain , mustnot_contain,least_contain=[],[],[]
+
+
+def striphtml(data):
+    p = re.compile(r'<.*?>')
+    return p.sub('', data)
+
+
 def setter(q,w,e):
     a=time.time()
-    must_contain = q
-    mustnot_contain = w
-    least_contain =e
+    must_contain = q.split(' ')
+    mustnot_contain = w.split(' ')
+    least_contain =e.split(' ')
 
 
     con=sqlite3.connect("crawler")
@@ -31,21 +37,25 @@ def setter(q,w,e):
     for i in range(len(links)):
         line=links[i]
         print line
-        #html_content = urllib2.urlopen(line).read()
-        html_content = contents[i]
+        html_content = striphtml(contents[i])
         flag = 0
+
         for word in must_contain:
-            matches = re.findall(word, html_content)
-            if word in matches:
-                flag += 1
+            if len(word) != 0:
+                matches = re.findall(word, html_content)
+                if word in matches:
+                    flag += 1
         if flag == len(must_contain):
             list.append(line)
+
         for word in least_contain:
-            matches3 = re.findall(word, html_content)
-            if line not in list:
-                if len(matches3) != 0:
-                    list.append(line)
-                    break
+            if len(word) != 0:
+                matches3 = re.findall(word, html_content)
+                if line not in list:
+                    if len(matches3) != 0:
+                        list.append(line)
+                        break
+
         for word in mustnot_contain:
             if len(word) != 0:
                 matches2 = re.findall(word, html_content)
@@ -57,3 +67,5 @@ def setter(q,w,e):
     print list
     print must_contain,mustnot_contain,least_contain
     print time.time()-a
+
+setter("<body>","","")
