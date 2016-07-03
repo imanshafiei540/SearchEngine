@@ -6,7 +6,7 @@ br=mechanize.Browser()
 br2=mechanize.Browser()
 lock=threading.Lock()
 browsers=[br]
-root="http://www.python.org/"
+root="http://www.tutorialspoint.com/python/"
 response=browsers[-1].open(root)
 br.open(root)
 links=br.links()
