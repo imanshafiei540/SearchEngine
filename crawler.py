@@ -14,7 +14,6 @@ response=browsers[-1].open(root)
 br.open(root)
 links=br.links()
 links=[root[:-1]+i.url for i in links if i.url[0]=="/"]
-print br.open("http://www.python.org/")
 #crawler=[{"link":root,"content":response.read(),"links":browsers[-1].links(),"flag":False}]
 crawler=[{"link":root,"content":response.read(),"links":browsers[-1].links()}]
 crawler2=[]

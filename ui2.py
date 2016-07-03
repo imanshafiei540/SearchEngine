@@ -88,10 +88,8 @@ class Ui_MainWindow(object):
         must=str(self.lineEdit_3.text()).rsplit()
         one_must=str(self.lineEdit_4.text()).rsplit()
         must_not=str(self.lineEdit_5.text()).rsplit()
-        print(must)
-
-        print(must_not)
-        print(one_must)
+        from indexing import setter
+        setter(must,must_not,one_must)
         print "done"
 
     def retranslateUi(self, MainWindow):
