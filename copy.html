@@ -1,37 +1,35 @@
 <!DOCTYPE html>
 <html>
-<body onload="myFunction()"style="height: 0px" marginbottom="0px" margintop="0px">
+<head><meta charset="utf-8" />
+<title>Read File (via AJAX)</title>
+<script type="text/javascript">
+var reader = new XMLHttpRequest() || new ActiveXObject('MSXML2.XMLHTTP');
 
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
-dasdasdasdasdasdasdsads<br>
+function loadFile() {
+    reader.open('get', 'result.txt', true);
+    reader.onreadystatechange = displayContents;
+    reader.send(null);
+}
+
+function displayContents() {
+    if(reader.readyState==4) {
+        var el = document.getElementById('main');
+        var k=reader.responseText.split('\n');
+        var x="";
+        x+='found '+k[2]+' results from '+k[1]+' addresses in'+k[0]+'seconds! <br>';
+        for (var i=3;i< k.length;i++){
+            x+="<a href=" + k[i] + ">" + k[i] + "</a>" + "<br>";
+        }
+    el.innerHTML=x;
+    }
+}
+
+</script>
+</head>
+<body onload="loadFile()">
+<div id="container">
+    <div id="main">
+    </div>
+</div>
 </body>
 </html>

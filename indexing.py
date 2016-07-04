@@ -16,9 +16,9 @@ def striphtml(data):
 
 def setter(q,w,e):
     a=time.time()
-    must_contain = q.split(' ')
-    mustnot_contain = w.split(' ')
-    least_contain =e.split(' ')
+    must_contain = q
+    mustnot_contain = w
+    least_contain =e
 
 
     con=sqlite3.connect("crawler")
@@ -65,7 +65,14 @@ def setter(q,w,e):
 
 
     print list
+    result=open("result.txt","w")
+    result.write(str(time.time()-a)+"\n")
+    result.write(str(len(links))+"\n")
+    result.write(str(len(list))+"\n")
+    for i in list:
+        result.write(i+"\n")
+    result.close()
     print must_contain,mustnot_contain,least_contain
     print time.time()-a
 
-setter("<body>","","")
+#setter("<body>","","")
