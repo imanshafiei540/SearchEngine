@@ -8,6 +8,9 @@
 
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import QUrl
+import socket
+import sys
+import results_pb2
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -84,13 +87,43 @@ class Ui_MainWindow(object):
 
 
     def search(self):
-        self.webView.load(QUrl('copy.html'))
+        import sample_pb2
+        s = socket.socket()
+        s.connect(("localhost",9999))
+
+        #self.webView.load(QUrl('copy.html'))
         must=str(self.lineEdit_3.text()).rsplit()
         one_must=str(self.lineEdit_4.text()).rsplit()
         must_not=str(self.lineEdit_5.text()).rsplit()
-        from indexing import setter
-        setter(must,must_not,one_must)
-        print "done"
+        #from indexing import setter
+        #setter(must,must_not,one_must)
+        data = sample_pb2.Data()
+        for item in must :
+            mb = data.mustbe.add()
+            mb.mustbe = item
+        for item in must_not :
+            mb = data.mustnotbe.add()
+            mb.mustnotbe = item
+        for item in one_must :
+            mb = data.onlybe.add() #repeated
+            mb.onlybe = item #string
+        res = data.SerializeToString()
+        print res
+        s.send(res)
+        finalRes = s.recv(100000)
+
+        final_links = results_pb2.Data()
+
+        final_links.ParseFromString(finalRes)
+        links = []
+
+        for item in final_links.repeatLinks:
+            links.append(item.containLinks)
+
+        print links
+
+        s.close()
+
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
@@ -102,11 +135,15 @@ class Ui_MainWindow(object):
 from PyQt4 import QtWebKit
 
 if __name__ == "__main__":
-    import sys
+
+
+
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
+
 
