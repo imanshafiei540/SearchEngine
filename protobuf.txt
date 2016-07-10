@@ -1,0 +1,35 @@
+package sample;
+
+
+message Data{
+	message MustBe{
+		required string mustbe = 1;
+
+		}
+	message MustNotBe{
+		required string mustnotbe = 1;	
+
+		}
+	message OnlyBe{
+		required string onlybe = 1;	
+	
+		}
+	repeated MustBe mustbe = 1 ;
+	repeated MustNotBe mustnotbe = 2;
+	repeated OnlyBe onlybe = 3;
+	}
+package sample;
+
+
+message Data{
+	message Links{
+		required string containLinks = 1;
+
+		}
+
+	repeated Links repeatLinks = 1 ;
+	
+	}
+
+
+
