@@ -166,7 +166,7 @@ class Ui_MainWindow(object):
             mb = data.onlybe.add() #repeated
             mb.onlybe = item #string
         res = data.SerializeToString()
-        print res
+        print (res)
         s.send(res)
         finalRes = s.recv(100000)
 
@@ -178,7 +178,7 @@ class Ui_MainWindow(object):
         for item in final_links.repeatLinks:
             links.append(item.containLinks)
 
-        print links
+        print (links)
         for item in links:
             self.resultBox.setText(item + '/n')
 
